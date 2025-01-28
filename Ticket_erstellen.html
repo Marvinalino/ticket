@@ -1,0 +1,89 @@
+﻿<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ticket erstellen</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .ticket-form input, .ticket-form textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .ticket-form button {
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+            .ticket-form button:hover {
+                background-color: #218838;
+            }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Ticket erstellen</h1>
+
+        <!-- Ticket-Erstellungsformular -->
+        <div class="ticket-form">
+            <input type="text" id="ticket-title" placeholder="Titel" required>
+            <textarea id="ticket-description" placeholder="Beschreibung" rows="4" required></textarea>
+            <button onclick="createTicket()">Ticket erstellen</button>
+        </div>
+
+        <p><a href="support.html">Zum Support-Bereich</a></p>
+    </div>
+
+    <script>
+        // Funktion zum Erstellen eines neuen Tickets
+        function createTicket() {
+            const title = document.getElementById('ticket-title').value;
+            const description = document.getElementById('ticket-description').value;
+
+            if (title && description) {
+                // Ticket-Objekt erstellen
+                const ticket = {
+                    id: Date.now(), // Eindeutige ID basierend auf dem aktuellen Zeitstempel
+                    title: title,
+                    description: description,
+                    status: 'Offen' // Standardstatus
+                };
+
+                // Tickets aus dem LocalStorage laden (falls vorhanden)
+                let tickets = JSON.parse(localStorage.getItem('tickets')) || [];
+
+                // Neues Ticket hinzufügen
+                tickets.push(ticket);
+
+                // Tickets im LocalStorage speichern
+                localStorage.setItem('tickets', JSON.stringify(tickets));
+
+                // Formular zurücksetzen
+                document.getElementById('ticket-title').value = '';
+                document.getElementById('ticket-description').value = '';
+
+                alert('Ticket erfolgreich erstellt!');
+            } else {
+                alert('Bitte fülle alle Felder aus.');
+            }
+        }
+    </script>
+</body>
+</html>

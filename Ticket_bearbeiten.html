@@ -1,0 +1,126 @@
+﻿<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support-Bereich</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .ticket-item {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+            .ticket-item h3 {
+                margin: 0 0 10px 0;
+            }
+
+            .ticket-item p {
+                margin: 0 0 10px 0;
+            }
+
+            .ticket-item select {
+                padding: 5px;
+                border-radius: 4px;
+            }
+
+            .ticket-item button {
+                padding: 5px 10px;
+                background-color: #007bff;
+                color: white;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+            }
+
+                .ticket-item button:hover {
+                    background-color: #0056b3;
+                }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Support-Bereich</h1>
+
+        <!-- Ticket-Liste -->
+        <div id="ticket-list">
+            <!-- Hier werden die Tickets dynamisch eingefügt -->
+        </div>
+
+        <p><a href="index.html">Zurück zur Ticket-Erstellung</a></p>
+    </div>
+
+    <script>
+        // Funktion zum Anzeigen der Tickets
+        function displayTickets() {
+            const ticketList = document.getElementById('ticket-list');
+            ticketList.innerHTML = ''; // Liste leeren
+
+            // Tickets aus dem LocalStorage laden
+            const tickets = JSON.parse(localStorage.getItem('tickets')) || [];
+
+            if (tickets.length === 0) {
+                ticketList.innerHTML = '<p>Keine Tickets vorhanden.</p>';
+                return;
+            }
+
+            // Jedes Ticket anzeigen
+            tickets.forEach(ticket => {
+                const ticketItem = document.createElement('div');
+                ticketItem.classList.add('ticket-item');
+
+                ticketItem.innerHTML = `
+                    <h3>${ticket.title}</h3>
+                    <p>${ticket.description}</p>
+                    <p><strong>Status:</strong> ${ticket.status}</p>
+                    <select id="status-${ticket.id}">
+                        <option value="Offen" ${ticket.status === 'Offen' ? 'selected' : ''}>Offen</option>
+                        <option value="In Bearbeitung" ${ticket.status === 'In Bearbeitung' ? 'selected' : ''}>In Bearbeitung</option>
+                        <option value="Gelöst" ${ticket.status === 'Gelöst' ? 'selected' : ''}>Gelöst</option>
+                    </select>
+                    <button onclick="updateStatus(${ticket.id})">Status aktualisieren</button>
+                `;
+
+                ticketList.appendChild(ticketItem);
+            });
+        }
+
+        // Funktion zum Aktualisieren des Ticket-Status
+        function updateStatus(ticketId) {
+            const status = document.getElementById(`status-${ticketId}`).value;
+
+            // Tickets aus dem LocalStorage laden
+            let tickets = JSON.parse(localStorage.getItem('tickets')) || [];
+
+            // Ticket-Status aktualisieren
+            tickets = tickets.map(ticket => {
+                if (ticket.id === ticketId) {
+                    ticket.status = status;
+                }
+                return ticket;
+            });
+
+            // Aktualisierte Tickets im LocalStorage speichern
+            localStorage.setItem('tickets', JSON.stringify(tickets));
+
+            // Tickets neu anzeigen
+            displayTickets();
+        }
+
+        // Tickets beim Laden der Seite anzeigen
+        displayTickets();
+    </script>
+</body>
+</html>
